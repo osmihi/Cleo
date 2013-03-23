@@ -13,7 +13,7 @@ public class Clock implements Runnable {
 		while (time < 100000) {
 			try {
 				face.setTime(time);
-				Thread.sleep(25);
+				Thread.sleep(1);
 				time++;
 			} catch (InterruptedException e) {}
 		}	

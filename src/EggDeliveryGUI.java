@@ -37,8 +37,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	private JPanel textPanel;
 	private JTextArea textArea;
 
-	private JPanel cleoPanel;
-	private PicLabel cleoPic;
+	private EggGUIPanel cleoPanel;
 	
 	private JPanel farmPanel;
 	private PicLabel henPic;
@@ -64,7 +63,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		new Thread(new Runnable() {
 			public void run() {
 				while(true) {
-					cleoPic.flip();
+					cleoPanel.flip();
 					try {
 						Thread.sleep(5000);
 					} catch (InterruptedException e) {}
@@ -103,13 +102,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	private void makeCleoPanel() {
-		cleoPanel = new JPanel();
-		cleoPanel.setOpaque(false);
-		
-		cleoPic = new PicLabel("res/cleo1.png", 128);
-		cleoPic.setAltPic("res/cleo2.gif");
-		
-		cleoPanel.add(cleoPic);
+		cleoPanel = new EggGUIPanel("res/cleo1.png", "res/cleo2.gif", 128);
 	}
 
 	private void makeFarmPanel() {
@@ -165,44 +158,5 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	
 	public void setTime(long time) {
 		timeLabel.setText("" + time);
-	}
-	
-	private class PicLabel extends JPanel {
-		
-		private JLabel pic;
-		private ImageIcon img1;
-		private ImageIcon img2;
-		private int size;
-		
-		public PicLabel(String imgLoc) {
-			this(imgLoc, 64);
-		}
-		
-		public PicLabel(String imgLoc, int size) {
-			this.size = size;
-			setLayout(new BorderLayout(0,0));
-			setOpaque(false);
-			ClassLoader cl = this.getClass().getClassLoader();
-			img1 = new ImageIcon(cl.getResource(imgLoc));
-			Image image1 = img1.getImage().getScaledInstance(size, size, java.awt.Image.SCALE_FAST);
-			img1 = new ImageIcon(image1);
-			pic = new JLabel(img1, JLabel.CENTER);
-			add(pic, BorderLayout.CENTER);
-		}
-		
-		public void setAltPic(String imgLoc) {
-			ClassLoader cl = this.getClass().getClassLoader();
-			img2 = new ImageIcon(cl.getResource(imgLoc));
-			Image image2 = img2.getImage().getScaledInstance(size, size, java.awt.Image.SCALE_FAST);
-			img2 = new ImageIcon(image2);
-		}
-		
-		public void flip() {
-			if (pic.getIcon() == img1) {
-				pic.setIcon(img2);
-			} else {
-				pic.setIcon(img1);
-			}
-		}
 	}
 }
