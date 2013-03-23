@@ -8,7 +8,7 @@ public class Logger {
 	private BufferedWriter writer;
 	
 	public Logger() {}
-	
+
 	public void log(String logStr) {
 		if (readout != null) {
 			readout.writeText(logStr);

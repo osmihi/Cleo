@@ -6,10 +6,8 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -29,10 +27,14 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		new Color(232,146,136)		// lipstick color
 	};
 	
+	private ClockMode speed = ClockMode.FAST;
+	
 	private JPanel mainPanel;
 
 	private EggGUIPanel cleoPanel;
-	private EggGUIPanel timePanel;
+	
+	private JPanel timePanel;
+	private EggGUIPanel clockPanel;
 	
 	private JPanel farmPanel;
 	private EggGUIPanel orderPanel;
@@ -47,7 +49,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		makeMainPanel();
 		
 		makeFarmPanel();
-		makeCleoPanel();
+		cleoPanel = new EggGUIPanel("res/cleo1.png", "res/cleo2.gif", 128);
 		makeTextPanel();		
 		makeTimePanel();
 
@@ -57,30 +59,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		mainPanel.add(textPanel);				
 		
 		// set up frame
-		makeFrame();
-		
-		new Thread(new Runnable() {
-			public void run() {
-				while(true) {
-					cleoPanel.flip();
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {}
-				}
-			}
-		}).start();
-		
-		new Thread(new Runnable() {
-			public void run() {
-				while(true) {
-					hensPanel.flip();
-					try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {}
-				}
-			}
-		}).start();
-		
+		makeFrame();		
 	}
 
 	private void makeMainPanel() {
@@ -99,23 +78,21 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		setTitle("ICS 462 Program 2 - Othman Smihi");
 		setVisible(true);
 	}
-	
-	private void makeCleoPanel() {
-		cleoPanel = new EggGUIPanel("res/cleo1.png", "res/cleo2.gif", 128);
-	}
 
 	private void makeFarmPanel() {
 		farmPanel = new JPanel();
 		farmPanel.setOpaque(false);
-		farmPanel.setLayout(new BorderLayout(0,0));
+		farmPanel.setLayout(new GridLayout(0,1,2,2));
 		
+		//JLabel farmLabel = new JLabel("Farmhouse");
 		orderPanel = new EggGUIPanel("res/order.png");
 		stashPanel = new EggGUIPanel("res/stash.png");
 		hensPanel = new EggGUIPanel("res/hen1.gif", "res/hen.gif");
 		
-		farmPanel.add(orderPanel, BorderLayout.NORTH);
-		farmPanel.add(stashPanel, BorderLayout.CENTER);
-		farmPanel.add(hensPanel, BorderLayout.SOUTH);
+		//farmPanel.add(farmLabel);
+		farmPanel.add(orderPanel);
+		farmPanel.add(stashPanel);
+		farmPanel.add(hensPanel);
 	}
 	
 	private void makeTextPanel() {
@@ -141,11 +118,91 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	private void makeTimePanel() {
-		timePanel = new EggGUIPanel("res/clock.gif");
-		timePanel.setValue("0");
+		timePanel = new JPanel();
+		timePanel.setLayout(new BorderLayout(5,5));
+		timePanel.setOpaque(false);
+		
+		clockPanel = new EggGUIPanel("res/clock.gif");
+		clockPanel.setValue("0");
+		
+		JPanel timeControlPanel = new JPanel();
+		timeControlPanel.setLayout(new GridLayout(1,3,5,5));
+		timeControlPanel.setOpaque(false);
+		
+		JButton slowBtn = new JButton(" Slow ");
+		JButton fastBtn = new JButton(" Fast ");
+		JButton instBtn = new JButton("Instant");
+		
+		slowBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				speed = ClockMode.SLOW;
+			}
+		});
+
+		
+		fastBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				speed = ClockMode.FAST;
+			}
+		});
+		
+		instBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				speed = ClockMode.INSTANT;
+			}
+		});
+		
+		timeControlPanel.add(slowBtn);
+		timeControlPanel.add(fastBtn);
+		timeControlPanel.add(instBtn);
+		
+		timePanel.add(clockPanel, BorderLayout.NORTH);
+		timePanel.add(timeControlPanel, BorderLayout.SOUTH);		
+	}
+	
+	public void setCleoState(String cleoState) {
+		if ("".equals(cleoState)) {
+			setCleoState();
+		} else {
+			cleoPanel.setValue(cleoState);
+			if (cleoPanel.flip()) {
+				cleoPanel.flip();
+			}
+		}
+		
+	}
+	
+	public void setCleoState() {
+		cleoPanel.setValue("Idle");
+		if (!cleoPanel.flip()) {
+			cleoPanel.flip();
+		}
 	}
 	
 	public void setTime(long time) {
-		timePanel.setValue("" + time);
+		clockPanel.setValue("" + time);
 	}
+	
+	public void setHens(int numHens, int numHenEggs) {
+		if ( (numHens & 1) != 1) hensPanel.flip(); // for fun, animate hen pic on even # hens
+		hensPanel.setValue("" + numHens + " (" + numHenEggs + ")");
+	}
+	
+	public void setOrders(int numOrders) {
+		orderPanel.setValue("" + numOrders);
+	}
+	
+	public void setStash(int stashSize) {
+		stashPanel.setValue("" + stashSize);
+	}
+	
+	@Override
+	public ClockMode getSpeed() {
+		return speed;
+	}
+
+	@Override
+	public void setSpeed(ClockMode spd) {
+		speed = spd;
+	} 
 }

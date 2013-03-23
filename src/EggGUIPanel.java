@@ -33,14 +33,14 @@ public class EggGUIPanel extends JPanel {
 		if (altPicFile != null) pic.setAltPic(altPicFile);
 		
 		val = new JLabel("");
-		val.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 32));
+		val.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size / 4));
 		
 		this.add(pic);
 		this.add(val);
 	}
 	
-	public void flip() {
-		pic.flip();
+	public boolean flip() {
+		return pic.flip();
 	}
 	
 	public void setValue(String value) {
@@ -74,11 +74,13 @@ public class EggGUIPanel extends JPanel {
 			img2 = new ImageIcon(image2);
 		}
 		
-		public void flip() {
+		public boolean flip() {
 			if (this.getIcon() == img1) {
 				this.setIcon(img2);
+				return false;
 			} else {
 				this.setIcon(img1);
+				return true;
 			}
 		}
 	}
