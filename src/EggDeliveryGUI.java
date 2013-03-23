@@ -31,17 +31,16 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	
 	private JPanel mainPanel;
 
-	private JPanel timePanel;
-	private JLabel timeLabel;
+	private EggGUIPanel cleoPanel;
+	private EggGUIPanel timePanel;
+	
+	private JPanel farmPanel;
+	private EggGUIPanel orderPanel;
+	private EggGUIPanel stashPanel;
+	private EggGUIPanel hensPanel;
 	
 	private JPanel textPanel;
 	private JTextArea textArea;
-
-	private EggGUIPanel cleoPanel;
-	
-	private JPanel farmPanel;
-	private PicLabel henPic;
-
 	
 	public EggDeliveryGUI() {
 		// set up main panel
@@ -74,7 +73,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		new Thread(new Runnable() {
 			public void run() {
 				while(true) {
-					henPic.flip();
+					hensPanel.flip();
 					try {
 						Thread.sleep(10000);
 					} catch (InterruptedException e) {}
@@ -110,14 +109,13 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		farmPanel.setOpaque(false);
 		farmPanel.setLayout(new BorderLayout(0,0));
 		
-		PicLabel orderPic = new PicLabel("res/order.png");
-		PicLabel stashPic = new PicLabel("res/stash.png");
-		henPic = new PicLabel("res/hen1.gif");
-		henPic.setAltPic("res/hen.gif");
+		orderPanel = new EggGUIPanel("res/order.png");
+		stashPanel = new EggGUIPanel("res/stash.png");
+		hensPanel = new EggGUIPanel("res/hen1.gif", "res/hen.gif");
 		
-		farmPanel.add(orderPic, BorderLayout.NORTH);
-		farmPanel.add(stashPic, BorderLayout.CENTER);
-		farmPanel.add(henPic, BorderLayout.SOUTH);
+		farmPanel.add(orderPanel, BorderLayout.NORTH);
+		farmPanel.add(stashPanel, BorderLayout.CENTER);
+		farmPanel.add(hensPanel, BorderLayout.SOUTH);
 	}
 	
 	private void makeTextPanel() {
@@ -143,20 +141,11 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	private void makeTimePanel() {
-		timePanel = new JPanel();
-		timePanel.setOpaque(false);
-		timePanel.setLayout(new BorderLayout(0,0));
-		
-		PicLabel clockPic = new PicLabel("res/clock.gif");
-		
-		timeLabel = new JLabel("0");
-		timeLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 32));
-		
-		timePanel.add(clockPic, BorderLayout.WEST);
-		timePanel.add(timeLabel, BorderLayout.EAST);
+		timePanel = new EggGUIPanel("res/clock.gif");
+		timePanel.setValue("0");
 	}
 	
 	public void setTime(long time) {
-		timeLabel.setText("" + time);
+		timePanel.setValue("" + time);
 	}
 }

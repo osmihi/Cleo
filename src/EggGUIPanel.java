@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -44,42 +43,42 @@ public class EggGUIPanel extends JPanel {
 		pic.flip();
 	}
 	
-	public void setVal(String value) {
+	public void setValue(String value) {
 		val.setText(value);
 	}
 
-	private class PicLabel extends JPanel {
+	private class PicLabel extends JLabel {
 		private static final long serialVersionUID = -1287588379795601986L;
 
-		private JLabel pic;
 		private ImageIcon img1;
 		private ImageIcon img2;
-		private int size;
+		private int picSize;
 		
-		public PicLabel(String imgLoc, int size) {
-			this.size = size;
-			setLayout(new BorderLayout(0,0));
+		public PicLabel(String imgLoc, int sz) {
+			picSize = sz;
 			setOpaque(false);
 			ClassLoader cl = this.getClass().getClassLoader();
-			img1 = new ImageIcon(cl.getResource(imgLoc));
-			Image image1 = img1.getImage().getScaledInstance(size, size, java.awt.Image.SCALE_FAST);
+			java.net.URL rsc = cl.getResource(imgLoc); 
+			img1 = new ImageIcon(rsc);
+			Image image1 = img1.getImage().getScaledInstance(picSize, picSize, java.awt.Image.SCALE_FAST);
 			img1 = new ImageIcon(image1);
-			pic = new JLabel(img1, JLabel.CENTER);
-			add(pic, BorderLayout.CENTER);
+			this.setIcon(img1);
+			this.setHorizontalAlignment(JLabel.CENTER);
+			this.setVerticalAlignment(JLabel.CENTER);
 		}
 		
 		public void setAltPic(String imgLoc) {
 			ClassLoader cl = this.getClass().getClassLoader();
 			img2 = new ImageIcon(cl.getResource(imgLoc));
-			Image image2 = img2.getImage().getScaledInstance(size, size, java.awt.Image.SCALE_FAST);
+			Image image2 = img2.getImage().getScaledInstance(picSize, picSize, java.awt.Image.SCALE_FAST);
 			img2 = new ImageIcon(image2);
 		}
 		
 		public void flip() {
-			if (pic.getIcon() == img1) {
-				pic.setIcon(img2);
+			if (this.getIcon() == img1) {
+				this.setIcon(img2);
 			} else {
-				pic.setIcon(img1);
+				this.setIcon(img1);
 			}
 		}
 	}
