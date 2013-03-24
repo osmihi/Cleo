@@ -1,9 +1,16 @@
 
 public class Hen {
+	
 	private int eggs;
+	private long nextEggTime;
 	
 	public Hen() {
 		eggs = 0;
+		nextEggTime = 0;
+	}
+	
+	public Hen(long firstEgg) {
+		nextEggTime = firstEgg;
 	}
 
 	public boolean layEgg() {
@@ -16,9 +23,14 @@ public class Hen {
 	}
 	
 	public int getEggs() {
-		int numEggs = eggs;
-		eggs = 0;
-		return numEggs;
+		return eggs;
 	}
 	
+	public long getNextEggTime() {
+		return nextEggTime;
+	}
+	
+	public void setNextEggTime(long time) {
+		nextEggTime = time;
+	}
 }

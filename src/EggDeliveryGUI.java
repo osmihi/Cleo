@@ -64,7 +64,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 
 	private void makeMainPanel() {
 		mainPanel = new JPanel();
-		mainPanel.setPreferredSize(new Dimension(720,600));
+		mainPanel.setPreferredSize(new Dimension(800,600));
 		mainPanel.setLayout(new GridLayout(2,2,10,10));
 		mainPanel.setBorder(new LineBorder(colors[0],4));
 		mainPanel.setBackground(colors[2]);

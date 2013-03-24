@@ -11,7 +11,7 @@ public class Logger {
 
 	// Convenience method for our logging
 	public void log(long time, String event, int stash, int hens) {
-		log("" + time + "\t" + event + " Stash: " + stash + " Hens: " + hens);
+		log("" + time + "\t" + event + "\tStash: " + stash + "\tHens: " + hens);
 	}
 	
 	public void log(String logStr) {

@@ -1,21 +1,20 @@
 import java.util.ArrayList;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class FarmHouse {
 	
 	private EggDeliveryGUI gui;
 	
-	private int orders;				// number of orders
-	private int stash;				// number of eggs in stash
-	private ArrayList<Hen> hens;	// hens in the FarmHouse
+	private int orders;									// number of orders
+	private int stash;									// number of eggs in stash
+	private ArrayList<Hen> hens;						// hens in the FarmHouse
+	private PriorityBlockingQueue<Hen> nextEggQueue;	// tracks hens that are going to lay eggs
 	
 	public FarmHouse() {
 		orders = 0;
 		stash = 0;
 		hens = new ArrayList<Hen>();
-		
-		for (int i = 0; i < 100; i++) {
-			addHen(new Hen());
-		}
+		nextEggQueue = new PriorityBlockingQueue<Hen>(100, new HenComparator());
 	}
 	
 	public void setGUI(EggDeliveryGUI gui) {
@@ -45,9 +44,26 @@ public class FarmHouse {
 		return henEggs;
 	}
 	
-	public void addHen(Hen newHen) {
+	public void addHen() {
+		Hen newHen = new Hen(EggDeliveryController.nextEgg());
 		hens.add(newHen);
-		if (gui != null) gui.setHens(countHens(), countHenEggs());
+		nextEggQueue.add(newHen);
+	}
+	
+	public long nextEggTime() {
+		if (nextEggQueue.peek() == null) return 0;
+		return nextEggQueue.peek().getNextEggTime();
+		
+	}
+	
+	public boolean henLaysEgg(long nextEgg) {
+		Hen h = nextEggQueue.poll();
+		boolean eggWasLaid = h.layEgg();
+		if (eggWasLaid) {
+			h.setNextEggTime(nextEgg);
+			nextEggQueue.add(h);
+		}
+		return eggWasLaid;
 	}
 	
 	public Hen removeAnyHen() throws NoHenException {

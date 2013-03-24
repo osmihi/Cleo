@@ -23,7 +23,7 @@ public class Cleo {
 	
 	public void hatch() {
 		cleosFarm.removeFromStash(1);
-		cleosFarm.addHen(new Hen());
+		cleosFarm.addHen();
 	}
 	
 	public void kill() throws NoHenException {

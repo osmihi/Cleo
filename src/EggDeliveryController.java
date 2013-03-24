@@ -1,8 +1,10 @@
+import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.concurrent.PriorityBlockingQueue;
 
-public class EggDeliveryApp extends Clock {
+public class EggDeliveryController extends Clock {
 
-	private Random random;
+	private static Random random;
 	
 	private EggDeliveryGUI gui;
 	private Logger logger;
@@ -11,9 +13,8 @@ public class EggDeliveryApp extends Clock {
 
 	private long nextOrderTime;
 	private long deliveryDoneTime;
-	private long nextEggTime;
-
-	public EggDeliveryApp() {
+	
+	public EggDeliveryController() {
 		random = new Random();
 		
 		gui = new EggDeliveryGUI();
@@ -22,42 +23,34 @@ public class EggDeliveryApp extends Clock {
 		logger = new Logger();
 		logger.setReadout(gui);
 		//logger.setLogFile(outFile);
-		
+
+
+		// note: let's get rid of the gui dependencies in these classes.
+		// better practice is to use this EggDeliveryController class as the controller.
 		farm = new FarmHouse();
 		farm.setGUI(gui);
+		
+		// add 100 Hens to start
+		for (int i = 0; i < 100; i++) {
+			farm.addHen();
+			if (gui != null) gui.setHens(farm.countHens(), farm.countHenEggs());
+			logger.log(getTime(), "New hen!", farm.countStash(), farm.countHens());
+		}
 		
 		cleo = new Cleo(farm);
 		cleo.setGUI(gui);
 
 		nextOrderTime = getTime() + nextOrder();
-		
+
 		// start the clock
 		Thread clockThread = new Thread(this);
 		clockThread.start();
-
-		//cleo.collectEggs();
-
-//		// test the text area
-//		new Thread(new Runnable() {
-//			public void run() {
-//				while (true) {
-//					int len = random.nextInt(16);
-//					String str = "";
-//					for (int i = 0; i < len; i++) str += (char)(random.nextInt(64) + 64);
-//
-//					try {
-//						logger.log("" + getTime() + " | Next order at: " + nextOrderTime + " | " + str);
-//						Thread.sleep(100);
-//					} catch (InterruptedException e) {}
-//				}				
-//			}
-//		}).start();
 
 	}
 
 	@Override
 	public void clockAction() {
-		// a while loops is used instead of an if statement because it is possible that generated time will be 0.
+		// a while loop is used instead of an if statement because it is possible that generated time will be 0.
 		while (getTime() == nextOrderTime) {
 			// signal a new order to be made
 			farm.receiveOrder();
@@ -65,32 +58,37 @@ public class EggDeliveryApp extends Clock {
 			logger.log(getTime(), "Order in!", farm.countStash(), farm.countHens());
 			nextOrderTime = getTime() + nextOrder();
 		}
+
 //		while (getTime() == deliveryDoneTime) {
-//			// signal that the delivery is done
+//			// TODO signal that the delivery is done
 //			// ??
 //		}
-//		while (getTime() == nextEggTime) {
-//			// signal that a new egg should be made
-//			// ??
-//		}
+
+		while (getTime() == farm.nextEggTime()) {
+			if ( farm.henLaysEgg(getTime() + nextEgg()) ) {
+				// TODO signal cleo that an egg is waiting
+				if (gui != null) gui.setHens(farm.countHens(), farm.countHenEggs());
+				logger.log(getTime(), "Hen laid egg.", farm.countStash(), farm.countHens());
+			}
+		}
 		
 	}
 	
-	public long nextOrder() {
+	public static long nextOrder() {
 		return (long)( -100 * Math.log( random.nextDouble() ) );
 	}
 
-	public long deliveryTime() {
+	public static long deliveryTime() {
 		return (long)( 10 * random.nextGaussian() + 50 ); 
 	}
 
-	public long nextEgg() {
+	public static long nextEgg() {
 		return (long)( 100 * random.nextGaussian() + 500 );
 	}
 	
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		EggDeliveryApp app = new EggDeliveryApp();
+		EggDeliveryController app = new EggDeliveryController();
 	}
 
 }

@@ -2,8 +2,8 @@ ICS 462 Program 2
 
 - Cleo = easter bunny who delivers eggs
 
-- Egg requests come in once every 100 time units
-	- specific random distribution blah blah
+*- Egg requests come in once every 100 time units
+*	- specific random distribution blah blah
 	- each request for 12 eggs
 - Egg delivery takes 50 time units
 	- std. dev. 10 units, normal distrib blah
@@ -13,9 +13,9 @@ ICS 462 Program 2
 - Each time a hen lays an egg it signals cleo
 - cleo takes 2 time units to remove any eggs than any hen has laid since she last visited the henhouse
 	- if multiple hens have laid eggs, she takes them all at once
-- Hens lay eggs once every 500 time units
-	- normal distribution std dev 100 blah blah
-- if hen lays 2+ eggs it will not lay anymore until collected
+*- Hens lay eggs once every 500 time units
+*	- normal distribution std dev 100 blah blah
+*- if hen lays 2+ eggs it will not lay anymore until collected
 	- lays next egg 500 time units after egg removal
 		- normal distrib blah blah
 
@@ -26,7 +26,7 @@ ICS 462 Program 2
 	- after serving a customer, if stash <= 13, cleo hatches one egg into a hen.
 		- hen starts laying eggs in avg. 500 time units
 
-- cleo starts with 100 hens and no eggs
+*- cleo starts with 100 hens and no eggs
 
 - write a multi-threaded Java program
 - use Java synchronization primitives
@@ -43,18 +43,18 @@ ICS 462 Program 2
 	- mean and std dev of time to fill customer orders
 - output:
 	- text log
-	- one line per event
-	- chronological order
+*	- one line per event
+*	- chronological order
 	- each line has:
-		- time stamp
+*		- time stamp
 		- type of event
 			- if delivery, how long it took to deliver
-		- number of eggs in stash after event
-		- number of hens in coop after event
+*		- number of eggs in stash after event
+*		- number of hens in coop after event
 - events:
-	- new hen initialized
-	- hen lays egg
+*	- new hen initialized
+*	- hen lays egg
 	- cleo gathers eggs
 	- customer places order
 	- order delivered
-- use specific random number generation stuff
+* use specific random number generation stuff
