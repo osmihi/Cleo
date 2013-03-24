@@ -160,23 +160,18 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		timePanel.add(timeControlPanel, BorderLayout.SOUTH);		
 	}
 	
-	public void setCleoState(String cleoState) {
-		if ("".equals(cleoState)) {
-			setCleoState();
+	public void setCleoState(Cleo.CleoState cleoState) {
+		String cleoStr = "";
+		if (cleoState == Cleo.CleoState.IDLE) {
+			cleoStr = "Idle";
+			if (!cleoPanel.flip()) cleoPanel.flip();
 		} else {
-			cleoPanel.setValue(cleoState);
-			if (cleoPanel.flip()) {
-				cleoPanel.flip();
-			}
+			if (cleoState == Cleo.CleoState.COLLECTING) cleoStr = "Collecting";
+			if (cleoState == Cleo.CleoState.DELIVERING) cleoStr = "Delivering";
+			if (cleoPanel.flip()) cleoPanel.flip();
 		}
-		
-	}
-	
-	public void setCleoState() {
-		cleoPanel.setValue("Idle");
-		if (!cleoPanel.flip()) {
-			cleoPanel.flip();
-		}
+
+		cleoPanel.setValue(cleoStr);
 	}
 	
 	public void setTime(long time) {
@@ -184,7 +179,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	public void setHens(int numHens, int numHenEggs) {
-		if ( (numHens & 1) != 1) hensPanel.flip(); // for fun, animate hen pic on even # hens
+		if ( numHens > 50 ) if (hensPanel.flip()) hensPanel.flip(); // for fun, animate hen pic sometimes
 		hensPanel.setValue("" + numHens + " (" + numHenEggs + ")");
 	}
 	

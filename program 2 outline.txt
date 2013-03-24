@@ -42,7 +42,7 @@ ICS 462 Program 2
 	- how many eggs were left over
 	- mean and std dev of time to fill customer orders
 - output:
-	- text log
+*	- text log
 *	- one line per event
 *	- chronological order
 	- each line has:

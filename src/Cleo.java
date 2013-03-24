@@ -1,33 +1,75 @@
 
-public class Cleo {
+public class Cleo implements Runnable {
 	
-	private FarmHouse cleosFarm;
-	private EggDeliveryGUI gui;
+	public enum CleoState {
+		IDLE, COLLECTING, DELIVERING
+	}
+	
+	private FarmHouse farm;
+	
+	private CleoState state;
 	
 	public Cleo(FarmHouse fh) {
-		cleosFarm = fh;
+		farm = fh;
+		state = CleoState.IDLE;
+	}
+
+	@Override
+	public synchronized void run() {
+		while (true) {			
+			// if there are eggs to collect, get them
+			if (farm.countHenEggs() > 0) {
+				collectEggs();
+			}
+
+			// if there is an order to deliver, deliver it
+			if (farm.countOrders() > 0 && farm.countStash() >= 12) {
+				deliver();
+			}
+			
+			try {
+				state = CleoState.IDLE;
+				if (farm.countHenEggs() < 1 && ( farm.countOrders() < 1 || farm.countStash() < 12 ) ) wait(); // if there's nothing to do, wait
+			} catch (InterruptedException e) {}
+		}
 	}
 	
-	public void setGUI(EggDeliveryGUI gui) {
-		this.gui = gui;
-		gui.setCleoState();
+	public synchronized void collectEggs() {
+		state = CleoState.COLLECTING;
+		
+		while (state == CleoState.COLLECTING) {
+			try {
+				wait();
+			} catch (InterruptedException e) {}
+		}
 	}
 	
-	public void collectEggs() {
-		if (gui != null) gui.setCleoState("Collecting");
+	public synchronized void deliver() {
+		state = CleoState.DELIVERING;
+		
+		while (state == CleoState.DELIVERING) {
+			try {
+				wait();
+			} catch (InterruptedException e) {}
+		}
 	}
 	
-	public void deliver() {
-		if (gui != null) gui.setCleoState("Delivering");
+	public CleoState getState() {
+		return state;
+	}
+	
+	public synchronized void idle() {
+		state = CleoState.IDLE;
+		notify();
 	}
 	
 	public void hatch() {
-		cleosFarm.removeFromStash(1);
-		cleosFarm.addHen();
+		farm.removeFromStash(1);
+		farm.addHen();
 	}
 	
 	public void kill() throws NoHenException {
-		cleosFarm.removeAnyHen();
+		// TODO farm.removeAnyHen();
 	}
 	
 }

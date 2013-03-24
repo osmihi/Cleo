@@ -14,7 +14,7 @@ public abstract class Clock implements Runnable {
 				if (face != null) {
 					ClockFace.ClockMode speed = face.getSpeed();
 					face.setTime(time);
-	
+
 					if (speed == ClockFace.ClockMode.SLOW) {
 						Thread.sleep(10);
 					} else if (speed == ClockFace.ClockMode.FAST) {

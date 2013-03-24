@@ -26,6 +26,12 @@ public class Hen {
 		return eggs;
 	}
 	
+	public int collectEggs() {
+		int eggsCollected = eggs;
+		eggs = 0;
+		return eggsCollected;
+	}
+	
 	public long getNextEggTime() {
 		return nextEggTime;
 	}

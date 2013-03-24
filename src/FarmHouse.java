@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class FarmHouse {
@@ -7,7 +8,7 @@ public class FarmHouse {
 	
 	private int orders;									// number of orders
 	private int stash;									// number of eggs in stash
-	private ArrayList<Hen> hens;						// hens in the FarmHouse
+	private Collection<Hen> hens;						// hens in the FarmHouse
 	private PriorityBlockingQueue<Hen> nextEggQueue;	// tracks hens that are going to lay eggs
 	
 	public FarmHouse() {
@@ -19,9 +20,6 @@ public class FarmHouse {
 	
 	public void setGUI(EggDeliveryGUI gui) {
 		this.gui = gui;
-		if (gui != null) gui.setOrders(0);
-		if (gui != null) gui.setStash(0);
-		if (gui != null) gui.setHens(countHens(), countHenEggs());
 	}
 	
 	public int countOrders() {
@@ -44,10 +42,18 @@ public class FarmHouse {
 		return henEggs;
 	}
 	
+	public Collection<Hen> getHens() {
+		return hens;
+	}
+	
 	public void addHen() {
 		Hen newHen = new Hen(EggDeliveryController.nextEgg());
 		hens.add(newHen);
 		nextEggQueue.add(newHen);
+	}
+	
+	public void addHenToQueue(Hen h) {
+		nextEggQueue.add(h);
 	}
 	
 	public long nextEggTime() {
@@ -66,6 +72,7 @@ public class FarmHouse {
 		return eggWasLaid;
 	}
 	
+/* TODO removeAnyHen
 	public Hen removeAnyHen() throws NoHenException {
 		if (!hens.isEmpty()) {
 			Hen h = hens.remove(0);
@@ -75,7 +82,7 @@ public class FarmHouse {
 			throw new NoHenException("There are no hens in the farmhouse!");
 		}
 	}
-	
+*/
 	public Hen removeSpecificHen(Hen specificHen) throws NoHenException {
 		if (hens.contains(specificHen)) {
 			hens.remove(specificHen);
@@ -88,12 +95,10 @@ public class FarmHouse {
 	
 	public void addEggs(int numEggs) {
 		stash = stash + numEggs;
-		if (gui != null) gui.setStash(stash);
 	}
 	
 	public int removeFromStash(int numEggs) {
 		stash = stash - numEggs;
-		if (gui != null) gui.setStash(stash);
 		return numEggs;
 	}
 	
@@ -101,8 +106,7 @@ public class FarmHouse {
 		orders++;
 	}
 	
-	public void closeOrder() {
+	public void completeOrder() {
 		orders--;
-		if (gui != null) gui.setOrders(orders);
 	}
 }
