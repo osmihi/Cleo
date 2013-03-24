@@ -9,6 +9,11 @@ public class Logger {
 	
 	public Logger() {}
 
+	// Convenience method for our logging
+	public void log(long time, String event, int stash, int hens) {
+		log("" + time + "\t" + event + " Stash: " + stash + " Hens: " + hens);
+	}
+	
 	public void log(String logStr) {
 		if (readout != null) {
 			readout.writeText(logStr);

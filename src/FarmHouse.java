@@ -83,7 +83,6 @@ public class FarmHouse {
 	
 	public void receiveOrder() {
 		orders++;
-		if (gui != null) gui.setOrders(orders);
 	}
 	
 	public void closeOrder() {

@@ -27,7 +27,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		new Color(232,146,136)		// lipstick color
 	};
 	
-	private ClockMode speed = ClockMode.FAST;
+	private ClockMode speed = ClockMode.SLOW;
 	
 	private JPanel mainPanel;
 
