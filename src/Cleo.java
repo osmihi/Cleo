@@ -9,19 +9,31 @@ public class Cleo implements Runnable {
 	
 	private CleoState state;
 	
+	private boolean doCollect;
+	
 	public Cleo(FarmHouse fh) {
 		farm = fh;
 		state = CleoState.IDLE;
+		doCollect = true;
 	}
 
 	@Override
 	public synchronized void run() {
-		while (true) {			
+		while (true) {
+			if (farm.countStash() >= 1100 && doCollect) {
+				killHen();
+				doCollect = false;
+			}
+			
+			if (!doCollect && farm.countStash() <= 1000) {
+				doCollect = true;
+			}
+			
 			// if there are eggs to collect, get them
-			if (farm.countHenEggs() > 0) {
+			if (farm.countHenEggs() > 0 && doCollect) {
 				collectEggs();
 			}
-
+			
 			// if there is an order to deliver, deliver it
 			if (farm.countOrders() > 0 && farm.countStash() >= 12) {
 				deliver();
@@ -29,7 +41,11 @@ public class Cleo implements Runnable {
 			
 			try {
 				state = CleoState.IDLE;
-				if (farm.countHenEggs() < 1 && ( farm.countOrders() < 1 || farm.countStash() < 12 ) ) wait(); // if there's nothing to do, wait
+				
+				if ( !(farm.countHenEggs() > 0 && doCollect) && !(farm.countOrders() > 0 && farm.countStash() >= 12) ) {
+					wait(); // if there's nothing to do, wait
+				}
+ 
 			} catch (InterruptedException e) {}
 		}
 	}
@@ -63,13 +79,8 @@ public class Cleo implements Runnable {
 		notify();
 	}
 	
-	public void hatch(long currentTime) {
-		farm.removeFromStash(1);
-		farm.addHen(new Hen(currentTime + EggDeliveryController.nextEgg()));
-	}
-	
-	public void kill() throws NoHenException {
-		// TODO farm.removeAnyHen();
+	public void killHen() throws NoHenException {
+		farm.removeAnyHen();
 	}
 	
 }

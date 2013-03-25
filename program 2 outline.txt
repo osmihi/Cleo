@@ -23,8 +23,8 @@ ICS 462 Program 2
 	- if it reaches 1100, she will not collect more eggs until stash drops to 1000 eggs
 		- she also kills one hen
 			- choose in any fashion
-	- after serving a customer, if stash <= 13, cleo hatches one egg into a hen.
-		- hen starts laying eggs in avg. 500 time units
+*	- after serving a customer, if stash <= 13, cleo hatches one egg into a hen.
+*		- hen starts laying eggs in avg. 500 time units
 
 *- cleo starts with 100 hens and no eggs
 

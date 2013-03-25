@@ -93,16 +93,6 @@ public class FarmHouse {
 			throw new NoHenException("There are no hens in the farmhouse!");
 		}
 	}
-
-	public Hen removeSpecificHen(Hen specificHen) throws NoHenException {
-		if (hens.contains(specificHen)) {
-			hens.remove(specificHen);
-			if (gui != null) gui.setHens(countHens(), countHenEggs());
-			return specificHen;
-		} else {
-			throw new NoHenException("That hen is not in the farmhouse!");
-		}
-	}
 	
 	public void addEggs(int numEggs) {
 		stash = stash + numEggs;
