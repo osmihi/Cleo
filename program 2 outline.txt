@@ -4,15 +4,15 @@ ICS 462 Program 2
 
 *- Egg requests come in once every 100 time units
 *	- specific random distribution blah blah
-	- each request for 12 eggs
-- Egg delivery takes 50 time units
-	- std. dev. 10 units, normal distrib blah
-	- "once she has amassed enough eggs to fill order"
-	- orders are first come first served
+*	- each request for 12 eggs
+*- Egg delivery takes 50 time units
+*	- std. dev. 10 units, normal distrib blah
+*	- "once she has amassed enough eggs to fill order"
+*	- orders are first come first served
 
-- Each time a hen lays an egg it signals cleo
-- cleo takes 2 time units to remove any eggs than any hen has laid since she last visited the henhouse
-	- if multiple hens have laid eggs, she takes them all at once
+*- Each time a hen lays an egg it signals cleo
+*- cleo takes 2 time units to remove any eggs than any hen has laid since she last visited the henhouse
+*	- if multiple hens have laid eggs, she takes them all at once
 *- Hens lay eggs once every 500 time units
 *	- normal distribution std dev 100 blah blah
 *- if hen lays 2+ eggs it will not lay anymore until collected
@@ -54,7 +54,7 @@ ICS 462 Program 2
 - events:
 *	- new hen initialized
 *	- hen lays egg
-	- cleo gathers eggs
-	- customer places order
-	- order delivered
+*	- cleo gathers eggs
+*	- customer places order
+*	- order delivered
 * use specific random number generation stuff

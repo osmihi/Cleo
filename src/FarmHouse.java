@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class FarmHouse {
@@ -8,7 +7,7 @@ public class FarmHouse {
 	
 	private int orders;									// number of orders
 	private int stash;									// number of eggs in stash
-	private Collection<Hen> hens;						// hens in the FarmHouse
+	private ArrayList<Hen> hens;						// hens in the FarmHouse
 	private PriorityBlockingQueue<Hen> nextEggQueue;	// tracks hens that are going to lay eggs
 	
 	public FarmHouse() {
@@ -42,18 +41,31 @@ public class FarmHouse {
 		return henEggs;
 	}
 	
-	public Collection<Hen> getHens() {
-		return hens;
-	}
-	
-	public void addHen() {
-		Hen newHen = new Hen(EggDeliveryController.nextEgg());
+	public void addHen(Hen newHen) {
 		hens.add(newHen);
 		nextEggQueue.add(newHen);
 	}
 	
-	public void addHenToQueue(Hen h) {
-		nextEggQueue.add(h);
+	public int[] collectEggs(long currentTime) {
+		int eggsCollected = 0;
+		int collectionDuration = 0;
+
+		for (Hen h: hens) {
+			if (h.getEggs() > 0) {
+				eggsCollected += h.collectEggs(); 				// get all the eggs from the hens
+				nextEggQueue.remove(h);
+				collectionDuration += 2;					// wait for 2 time units per hen
+				h.setNextEggTime(currentTime + EggDeliveryController.nextEgg()); 	// give the hen next egg time
+				nextEggQueue.add(h);						// put them back in the next egg queue
+			}
+		}
+		
+		return new int[] {eggsCollected, collectionDuration};
+	} 
+	
+	public void hatchEgg(Hen h) {
+		stash--;
+		addHen(h);
 	}
 	
 	public long nextEggTime() {
@@ -72,7 +84,6 @@ public class FarmHouse {
 		return eggWasLaid;
 	}
 	
-/* TODO removeAnyHen
 	public Hen removeAnyHen() throws NoHenException {
 		if (!hens.isEmpty()) {
 			Hen h = hens.remove(0);
@@ -82,7 +93,7 @@ public class FarmHouse {
 			throw new NoHenException("There are no hens in the farmhouse!");
 		}
 	}
-*/
+
 	public Hen removeSpecificHen(Hen specificHen) throws NoHenException {
 		if (hens.contains(specificHen)) {
 			hens.remove(specificHen);

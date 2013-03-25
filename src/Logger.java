@@ -10,8 +10,11 @@ public class Logger {
 	public Logger() {}
 
 	// Convenience method for our logging
-	public void log(long time, String event, int stash, int hens) {
-		log("" + time + "\t" + event + "\tStash: " + stash + "\tHens: " + hens);
+	public void log(long time, String event, int stash, int hens, int henEggs) {
+		String space = "";
+		for (int i = 0; i < 16 - event.length(); i++) {space += " ";}
+		
+		log("" + time + "\t" + event + space + "Stash: " + stash + " \tHens: " + hens + "(" + henEggs + ")");
 	}
 	
 	public void log(String logStr) {

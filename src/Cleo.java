@@ -63,9 +63,9 @@ public class Cleo implements Runnable {
 		notify();
 	}
 	
-	public void hatch() {
+	public void hatch(long currentTime) {
 		farm.removeFromStash(1);
-		farm.addHen();
+		farm.addHen(new Hen(currentTime + EggDeliveryController.nextEgg()));
 	}
 	
 	public void kill() throws NoHenException {

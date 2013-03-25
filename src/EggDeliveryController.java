@@ -16,6 +16,7 @@ public class EggDeliveryController extends Clock {
 	private long deliveryDuration;
 	
 	private long collectionDoneTime;
+	private long collectionDuration;
 	private int collected;
 	
 	public EggDeliveryController() {
@@ -43,13 +44,14 @@ public class EggDeliveryController extends Clock {
 		
 		// start with 100 hens
 		for (int i = 0; i < 100; i++) {
-			farm.addHen();
+			farm.addHen(new Hen(getTime() + nextEgg()));
 			
 			gui.setHens(farm.countHens(), farm.countHenEggs());
-			logger.log(getTime(), "New hen!", farm.countStash(), farm.countHens());
+			logger.log(getTime(), "New hen", farm.countStash(), farm.countHens(), farm.countHenEggs());
 		}
 		
 		deliveryDuration = 0;
+		collectionDuration = 0;
 		collected = 0;
 		
 		cleo = new Cleo(farm);
@@ -73,8 +75,8 @@ public class EggDeliveryController extends Clock {
 			// signal a new order to be made
 			farm.receiveOrder();
 
-			logger.log(getTime(), "Order in!", farm.countStash(), farm.countHens());
-			
+			logger.log(getTime(), "Order in", farm.countStash(), farm.countHens(), farm.countHenEggs());
+
 			nextOrderTime = getTime() + nextOrder();
 
 			synchronized(cleo) {
@@ -85,7 +87,7 @@ public class EggDeliveryController extends Clock {
 		while (getTime() == farm.nextEggTime()) {
 			if ( farm.henLaysEgg(getTime() + nextEgg()) ) {
 
-				logger.log(getTime(), "Hen laid egg.", farm.countStash(), farm.countHens());
+				logger.log(getTime(), "Egg Laid", farm.countStash(), farm.countHens(), farm.countHenEggs());
 				
 				synchronized(cleo) {
 					cleo.notify(); // now that there are some eggs to be collected, tell cleo there's something to do
@@ -93,58 +95,22 @@ public class EggDeliveryController extends Clock {
 			}
 		}
 		
+		// being delivery
 		if (cleo.getState() == Cleo.CleoState.DELIVERING && deliveryDoneTime < getTime()) {
-			
-			gui.setCleoState(Cleo.CleoState.DELIVERING);
-			
-			farm.removeFromStash(12); // take away 12 eggs from stash
-			
-			farm.completeOrder(); // take away 1 order
-
-			deliveryDuration = deliveryTime();
-			deliveryDoneTime = getTime() + deliveryDuration;
+			beginDelivery();
 		}
 
+		// complete delivery
 		if (getTime() == deliveryDoneTime) {
-			logger.log(getTime(), "Delivery completed (" + deliveryDuration + ").", farm.countStash(), farm.countHens());
-			
-			deliveryDuration = 0;
-			
-			synchronized(cleo) {
-				gui.setCleoState(Cleo.CleoState.IDLE);
-				cleo.idle(); // ok cleo, you're free to do something else now
-			}
+			completeDelivery();
 		}
 
 		if (cleo.getState() == Cleo.CleoState.COLLECTING && collectionDoneTime < getTime()) {
-			
-			gui.setCleoState(Cleo.CleoState.COLLECTING);
-			
-			collected = 0;
-			collectionDoneTime = getTime();
-			
-			for (Hen h: farm.getHens()) {
-				if (h.getEggs() > 0) {
-					collected += h.collectEggs(); 				// get all the eggs from the hens
-					h.setNextEggTime(getTime() + nextEgg()); 	// give all the hens next egg times
-					farm.addHenToQueue(h);
-					collectionDoneTime += 2;					// wait for 2 time units per hen
-				}
-			}
+			beginEggCollection();
 		}
 
 		if (getTime() == collectionDoneTime) {
-			farm.addEggs(collected); 							// put them in the stash
-			
-			
-			logger.log(getTime(), collected + " eggs collected.", farm.countStash(), farm.countHens());			
-
-			collected = 0;
-			
-			synchronized(cleo) {
-				gui.setCleoState(Cleo.CleoState.IDLE);
-				cleo.idle(); // ok cleo, you're free to do something else now
-			}
+			completeEggCollection();
 		}
 
 		// refresh gui
@@ -153,6 +119,59 @@ public class EggDeliveryController extends Clock {
 		gui.setHens(farm.countHens(), farm.countHenEggs());
 		gui.setCleoState(cleo.getState());
 		
+	}
+
+	private synchronized void beginDelivery() {
+		gui.setCleoState(Cleo.CleoState.DELIVERING);
+		
+		farm.removeFromStash(12); // take away 12 eggs from stash
+		
+		farm.completeOrder(); // take away 1 order
+
+		deliveryDuration = deliveryTime();
+		deliveryDoneTime = getTime() + deliveryDuration;
+	}
+	
+	private synchronized void completeDelivery() {
+		logger.log(getTime(), "Delivery (" + deliveryDuration + ")", farm.countStash(), farm.countHens(), farm.countHenEggs());
+		
+		deliveryDuration = 0;
+		
+		// after serving a customer, if stash <= 13, cleo hatches one egg into a hen.
+		if (farm.countStash() <= 13 && farm.countStash() > 0) {
+			farm.hatchEgg(new Hen(getTime() + nextEgg()));
+			logger.log(getTime(), "New hen", farm.countStash(), farm.countHens(), farm.countHenEggs());
+		}
+
+		synchronized(cleo) {
+			gui.setCleoState(Cleo.CleoState.IDLE);
+			cleo.idle(); // ok cleo, you're free to do something else now
+		}
+
+	}
+	
+	private synchronized void beginEggCollection() {
+		gui.setCleoState(Cleo.CleoState.COLLECTING);
+
+		int[] eggsAndTime = farm.collectEggs(getTime());
+		collected = eggsAndTime[0];
+		collectionDuration = eggsAndTime[1];
+
+		collectionDoneTime = getTime() + collectionDuration;
+	}
+
+	private synchronized void completeEggCollection() {
+		farm.addEggs(collected); 							// put them in the stash
+		
+		logger.log(getTime(), "Collect " + collected + " (" + collectionDuration + ")", farm.countStash(), farm.countHens(), farm.countHenEggs());			
+
+		collected = 0;
+		collectionDuration = 0;
+		
+		synchronized(cleo) {
+			gui.setCleoState(Cleo.CleoState.IDLE);
+			cleo.idle(); // ok cleo, you're free to do something else now
+		}		
 	}
 	
 	public static long nextOrder() {
