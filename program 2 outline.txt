@@ -36,7 +36,7 @@ ICS 462 Program 2
 	- hens are killed
 	- orders come in
 	- orders are filled
-- run program with customers coming in for 100K time units
+*- run program with customers coming in for 100K time units
 - when all orders are served, program terminates
 - report:
 	- how many eggs were left over
@@ -45,10 +45,10 @@ ICS 462 Program 2
 *	- text log
 *	- one line per event
 *	- chronological order
-	- each line has:
+*	- each line has:
 *		- time stamp
-		- type of event
-			- if delivery, how long it took to deliver
+*		- type of event
+*			- if delivery, how long it took to deliver
 *		- number of eggs in stash after event
 *		- number of hens in coop after event
 - events:

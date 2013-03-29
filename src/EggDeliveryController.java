@@ -10,6 +10,9 @@ public class EggDeliveryController extends Clock {
 	private Logger logger;
 	private FarmHouse farm;
 	private Cleo cleo;
+	
+	Thread cleoThread;
+	Thread clockThread;
 
 	private long nextOrderTime;
 	private long deliveryDoneTime;
@@ -49,7 +52,10 @@ public class EggDeliveryController extends Clock {
 			gui.setHens(farm.countHens(), farm.countHenEggs());
 			logger.log(getTime(), "New hen", farm.countStash(), farm.countHens(), farm.countHenEggs());
 		}
-		
+
+		deliveryDoneTime = -1;
+		collectionDoneTime = -1;
+
 		deliveryDuration = 0;
 		collectionDuration = 0;
 		collected = 0;
@@ -59,17 +65,38 @@ public class EggDeliveryController extends Clock {
 
 		nextOrderTime = getTime() + nextOrder();
 
-		Thread cleoThread = new Thread(cleo);
+		cleoThread = new Thread(cleo);
 		cleoThread.start();
 		
 		// start the clock
-		Thread clockThread = new Thread(this);
+		clockThread = new Thread(this);
 		clockThread.start();
 
 	}
 
 	@Override
-	public synchronized void clockAction() {
+	protected boolean continueCondition() {
+		return getTime() <= 100000;
+	}
+
+	@Override
+	public void endAction() {
+		// TODO what to do at the end
+		// TODO join the threads
+
+		try {
+			cleoThread.join();
+			clockThread.join();
+		} catch (InterruptedException e) {}
+
+		// TODO show stats
+		// TODO incl. tracking individual orders!??!
+		// TODO log when hens are killed
+		// 
+	}
+	
+	@Override
+	public synchronized void runAction() {
 		// a while loop is used instead of an if statement because it is possible that the next generated time will be 0.
 		while (getTime() == nextOrderTime) {
 			// signal a new order to be made
@@ -190,5 +217,4 @@ public class EggDeliveryController extends Clock {
 	public static void main(String[] args) {
 		EggDeliveryController app = new EggDeliveryController();
 	}
-
 }

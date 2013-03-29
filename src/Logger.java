@@ -9,12 +9,16 @@ public class Logger {
 	
 	public Logger() {}
 
+	private String space(String str, int len) {
+		String space = "";
+		for (int i = 0; i < len - str.length(); i++) {space += " ";}
+		return str + space;
+	}
+	
 	// Convenience method for our logging
 	public void log(long time, String event, int stash, int hens, int henEggs) {
-		String space = "";
-		for (int i = 0; i < 16 - event.length(); i++) {space += " ";}
 		
-		log("" + time + "\t" + event + space + "Stash: " + stash + " \tHens: " + hens + "(" + henEggs + ")");
+		log(space("" + time, 7) + space(event, 18) + "Stash: " + space("" + stash, 5) + "Hens: " + space("" + hens + "(" + henEggs + ")", 10));
 	}
 	
 	public void log(String logStr) {

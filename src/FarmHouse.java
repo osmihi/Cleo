@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class FarmHouse {
@@ -7,13 +6,13 @@ public class FarmHouse {
 	
 	private int orders;									// number of orders
 	private int stash;									// number of eggs in stash
-	private ArrayList<Hen> hens;						// hens in the FarmHouse
+	private PriorityBlockingQueue<Hen> hens;						// hens in the FarmHouse
 	private PriorityBlockingQueue<Hen> nextEggQueue;	// tracks hens that are going to lay eggs
 	
 	public FarmHouse() {
 		orders = 0;
 		stash = 0;
-		hens = new ArrayList<Hen>();
+		hens = new PriorityBlockingQueue<Hen>(100, new HenComparator());
 		nextEggQueue = new PriorityBlockingQueue<Hen>(100, new HenComparator());
 	}
 	
@@ -36,7 +35,7 @@ public class FarmHouse {
 	public int countHenEggs() {
 		int henEggs = 0;
 		for (Hen h : hens) {
-			henEggs += h.getEggs();
+			if (h != null) henEggs += h.getEggs();
 		}
 		return henEggs;
 	}
@@ -86,7 +85,7 @@ public class FarmHouse {
 	
 	public Hen removeAnyHen() throws NoHenException {
 		if (!hens.isEmpty()) {
-			Hen h = hens.remove(0);
+			Hen h = hens.poll();
 			if (gui != null) gui.setHens(countHens(), countHenEggs());
 			return h;
 		} else {

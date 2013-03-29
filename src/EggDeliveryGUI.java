@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.text.BadLocationException;
 
 public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	private static final long serialVersionUID = 1254856031749675648L;
@@ -31,6 +32,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	
 	private JPanel mainPanel;
 
+	private JPanel titlePanel;
 	private EggGUIPanel cleoPanel;
 	
 	private JPanel timePanel;
@@ -49,11 +51,11 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		makeMainPanel();
 		
 		makeFarmPanel();
-		cleoPanel = new EggGUIPanel("res/cleo1.png", "res/cleo2.gif", 128);
+		makeTitlePanel();
 		makeTextPanel();		
 		makeTimePanel();
 
-		mainPanel.add(cleoPanel);
+		mainPanel.add(titlePanel);
 		mainPanel.add(timePanel);
 		mainPanel.add(farmPanel);
 		mainPanel.add(textPanel);				
@@ -79,6 +81,20 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		setVisible(true);
 	}
 
+	private void makeTitlePanel() {
+		titlePanel = new JPanel();
+		titlePanel.setOpaque(false);
+		titlePanel.setLayout(new GridLayout(0,1,5,5));
+		
+		JLabel titleLabel = new JLabel("Cleo's Farm");
+		titleLabel.setFont(new Font("Courier New", Font.BOLD, 32));
+		
+		cleoPanel = new EggGUIPanel("res/cleo1.png", "res/cleo2.gif", 128);
+		
+		titlePanel.add(titleLabel);
+		titlePanel.add(cleoPanel);
+	}
+	
 	private void makeFarmPanel() {
 		farmPanel = new JPanel();
 		farmPanel.setOpaque(false);
@@ -113,6 +129,10 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	public void writeText(String text) {
+		String txt = textArea.getText();
+		txt = txt.length() < 1000 ? txt : txt.substring(txt.length() - 1000);
+		textArea.setText(txt);
+		
 		textArea.append("\n" + text);
 		textArea.setCaretPosition(textArea.getDocument().getLength());
 	}
@@ -126,20 +146,26 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		clockPanel.setValue("0");
 		
 		JPanel timeControlPanel = new JPanel();
-		timeControlPanel.setLayout(new GridLayout(1,3,5,5));
+		timeControlPanel.setLayout(new GridLayout(1,0,5,5));
 		timeControlPanel.setOpaque(false);
 		
 		JButton slowBtn = new JButton(" Slow ");
+		JButton medBtn = new JButton(" Medium ");
 		JButton fastBtn = new JButton(" Fast ");
-		JButton instBtn = new JButton("Instant");
+		JButton instBtn = new JButton("Fastest");
 		
 		slowBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				speed = ClockMode.SLOW;
 			}
 		});
-
 		
+		medBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				speed = ClockMode.MEDIUM;
+			}
+		});
+
 		fastBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				speed = ClockMode.FAST;
@@ -153,6 +179,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		});
 		
 		timeControlPanel.add(slowBtn);
+		timeControlPanel.add(medBtn);
 		timeControlPanel.add(fastBtn);
 		timeControlPanel.add(instBtn);
 		
@@ -180,7 +207,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	
 	public void setHens(int numHens, int numHenEggs) {
 		if ( numHens > 50 ) if (hensPanel.flip()) hensPanel.flip(); // for fun, animate hen pic sometimes
-		hensPanel.setValue("" + numHens + " (" + numHenEggs + ")");
+		hensPanel.setValue("" + numHens + " (" + numHenEggs + " eggs)");
 	}
 	
 	public void setOrders(int numOrders) {
