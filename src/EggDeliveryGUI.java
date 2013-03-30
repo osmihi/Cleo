@@ -16,7 +16,6 @@ import java.text.DecimalFormat;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.text.BadLocationException;
 
 public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	private static final long serialVersionUID = 1254856031749675648L;
