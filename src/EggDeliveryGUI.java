@@ -183,9 +183,9 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		ordersFilledStdDev = new JLabel(strFmt(0,8));
 		ordersFilledStdDev.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
 		
-		lStats.add(new JLabel("Deliveries")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
-		lStats.add(new JLabel("Mean")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
-		lStats.add(new JLabel("Std Dev")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		lStats.add(new JLabel("Orders filled")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		lStats.add(new JLabel("Mean order time")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		lStats.add(new JLabel("Standard Deviation")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
 		rStats.add(ordersFilled);
 		rStats.add(ordersFilledMean);
 		rStats.add(ordersFilledStdDev);
@@ -260,11 +260,11 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		if ( numHenEggs > 0 ) {
 			if (hensPanel.flip()) hensPanel.flip();
 		} else {
-			if (!cleoPanel.flip()) cleoPanel.flip();
+			if (!hensPanel.flip()) hensPanel.flip();
 		}
 		hensPanel.setValue("" + numHens + " (" + numHenEggs + " eggs)");
 	}
-	
+
 	public void setOrders(int numOrders) {
 		orderPanel.setValue("" + numOrders);
 	}

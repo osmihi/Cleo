@@ -2,8 +2,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class FarmHouse {
 	
-	private EggDeliveryGUI gui;
-	
 	private int orders;									// number of orders
 	private int stash;									// number of eggs in stash
 	private PriorityBlockingQueue<Hen> hens;			// hens in the FarmHouse
@@ -14,10 +12,6 @@ public class FarmHouse {
 		stash = 0;
 		hens = new PriorityBlockingQueue<Hen>(100, new HenComparator());
 		nextEggQueue = new PriorityBlockingQueue<Hen>(100, new HenComparator());
-	}
-	
-	public void setGUI(EggDeliveryGUI gui) {
-		this.gui = gui;
 	}
 	
 	public int countOrders() {
@@ -84,7 +78,6 @@ public class FarmHouse {
 	public Hen removeAnyHen() throws NoHenException {
 		if (!hens.isEmpty()) {
 			Hen h = hens.poll();
-			if (gui != null) gui.setHens(countHens(), countHenEggs());
 			return h;
 		} else {
 			throw new NoHenException("There are no hens in the farmhouse!");
