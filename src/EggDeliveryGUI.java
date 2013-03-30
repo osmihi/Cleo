@@ -186,20 +186,13 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		lStats.add(new JLabel("Deliveries")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
 		lStats.add(new JLabel("Mean")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
 		lStats.add(new JLabel("Std Dev")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
-		//lStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		rStats.add(ordersFilled);
-		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		rStats.add(ordersFilledMean);
-		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		rStats.add(ordersFilledStdDev);
-		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
-		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
-		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		
 		statsPanel.add(statsLabel, BorderLayout.NORTH);
 		statsPanel.add(lStats, BorderLayout.WEST);
 		statsPanel.add(rStats, BorderLayout.EAST);
-
 
 		JPanel timeControlPanel = new JPanel();
 		timeControlPanel.setLayout(new GridLayout(1,0,5,5));
