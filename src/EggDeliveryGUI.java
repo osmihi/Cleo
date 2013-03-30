@@ -30,7 +30,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		new Color(232,146,136)		// lipstick color
 	};
 	
-	private ClockMode speed = ClockMode.SLOW;
+	private ClockMode speed = ClockMode.MEDIUM;
 	
 	private JPanel mainPanel;
 
@@ -263,7 +263,12 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	public void setHens(int numHens, int numHenEggs) {
-		if ( numHenEggs > 0 ) if (hensPanel.flip()) hensPanel.flip(); // for fun, animate hen pic sometimes
+		// for fun, animate hen pic sometimes
+		if ( numHenEggs > 0 ) {
+			if (hensPanel.flip()) hensPanel.flip();
+		} else {
+			if (!cleoPanel.flip()) cleoPanel.flip();
+		}
 		hensPanel.setValue("" + numHens + " (" + numHenEggs + " eggs)");
 	}
 	

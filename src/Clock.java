@@ -16,11 +16,11 @@ public abstract class Clock implements Runnable {
 					face.setTime(time);
 
 					if (speed == ClockFace.ClockMode.SLOW) {
-						Thread.sleep(10);
+						Thread.sleep(100);
 					} else if (speed == ClockFace.ClockMode.MEDIUM) {
-						Thread.sleep(1);
+						Thread.sleep(10);
 					} else if (speed == ClockFace.ClockMode.FAST) {
-						if (time % 10 == 0) Thread.sleep(1);
+						Thread.sleep(1);
 					}
 				}
 

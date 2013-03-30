@@ -165,16 +165,16 @@ public class EggDeliveryController extends Clock {
 
 	private synchronized void beginDelivery() {
 		gui.setCleoState(Cleo.CleoState.DELIVERING);
-		
-		farm.removeFromStash(12); // take away 12 eggs from stash
-		
-		farm.completeOrder(); // take away 1 order
 
 		deliveryDuration = deliveryTime();
 		deliveryDoneTime = getTime() + deliveryDuration;
 	}
 	
 	private synchronized void completeDelivery() {
+		farm.removeFromStash(12); // take away 12 eggs from stash
+		
+		farm.completeOrder(); // take away 1 order
+		
 		logger.log(getTime(), "Delivery (" + deliveryDuration + ")", farm.countStash(), farm.countHens(), farm.countHenEggs());
 		
 		long orderFillTime = getTime() - orderTimes.poll();
