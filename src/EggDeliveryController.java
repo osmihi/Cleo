@@ -97,7 +97,7 @@ public class EggDeliveryController extends Clock {
 	
 	@Override
 	public synchronized void runAction() {
-		// a while loop is used instead of an if statement because it is possible that the next generated time will be 0.
+		// a while loop is used instead of an if statement because it is possible that the next order will be at the same time.
 		while (getTime() == nextOrderTime) {
 			// signal a new order to be made
 			farm.receiveOrder();
@@ -180,6 +180,9 @@ public class EggDeliveryController extends Clock {
 	private synchronized void beginEggCollection() {
 		gui.setCleoState(Cleo.CleoState.COLLECTING);
 
+		// TODO collection duration should always be 2!!!!!
+		// TODO mention egg collection policy; are eggs collected if laid while collecting? answer: no.
+		
 		int[] eggsAndTime = farm.collectEggs(getTime());
 		collected = eggsAndTime[0];
 		collectionDuration = eggsAndTime[1];
