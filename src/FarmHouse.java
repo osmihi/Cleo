@@ -46,21 +46,19 @@ public class FarmHouse {
 		nextEggQueue.add(newHen);
 	}
 	
-	public int[] collectEggs(long currentTime) {
+	public int collectEggs(long currentTime) {
 		int eggsCollected = 0;
-		int collectionDuration = 0;
 
 		for (Hen h: hens) {
 			if (h.getEggs() > 0) {
 				eggsCollected += h.collectEggs(); 				// get all the eggs from the hens
 				nextEggQueue.remove(h);
-				collectionDuration += 2;					// wait for 2 time units per hen
 				h.setNextEggTime(currentTime + EggDeliveryController.nextEgg()); 	// give the hen next egg time
 				nextEggQueue.add(h);						// put them back in the next egg queue
 			}
 		}
 		
-		return new int[] {eggsCollected, collectionDuration};
+		return eggsCollected;
 	} 
 	
 	public void hatchEgg(Hen h) {

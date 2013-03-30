@@ -180,12 +180,10 @@ public class EggDeliveryController extends Clock {
 	private synchronized void beginEggCollection() {
 		gui.setCleoState(Cleo.CleoState.COLLECTING);
 
-		// TODO collection duration should always be 2!!!!!
-		// TODO mention egg collection policy; are eggs collected if laid while collecting? answer: no.
+		// note: Eggs laid during collection are not collected.
 		
-		int[] eggsAndTime = farm.collectEggs(getTime());
-		collected = eggsAndTime[0];
-		collectionDuration = eggsAndTime[1];
+		collected  = farm.collectEggs(getTime());
+		collectionDuration = 2; // it always takes 2 time units to collect eggs
 
 		collectionDoneTime = getTime() + collectionDuration;
 	}
