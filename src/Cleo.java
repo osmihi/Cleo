@@ -20,9 +20,9 @@ public class Cleo implements Runnable {
 	@Override
 	public synchronized void run() {
 		while (true) {
+			// when our stash surpasses 1200, kill one hen.
 			if (farm.countStash() >= 1100 && doCollect) {
 				killHen();			// TODO need to log that a hen was killed!
-									// TODO should I kill hens continuously, or only when we go past 1100???
 				doCollect = false;
 			}
 			

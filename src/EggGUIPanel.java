@@ -24,7 +24,7 @@ public class EggGUIPanel extends JPanel {
 		this(picFile, null, size);
 	}
 
-	public EggGUIPanel(String picFile, String altPicFile, int size) {
+	public EggGUIPanel(String picFile, String altPicFile, int size, int fontSize) {
 		super();
 		this.setLayout(new GridLayout(1,2,5,5));
 		this.setOpaque(false);
@@ -33,10 +33,14 @@ public class EggGUIPanel extends JPanel {
 		if (altPicFile != null) pic.setAltPic(altPicFile);
 		
 		val = new JLabel("");
-		val.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size / 4));
+		val.setFont(new Font(Font.MONOSPACED, Font.PLAIN, fontSize));
 		
 		this.add(pic);
 		this.add(val);
+	}
+	
+	public EggGUIPanel(String picFile, String altPicFile, int size) {
+		this(picFile, altPicFile, size, size / 4);
 	}
 	
 	public boolean flip() {

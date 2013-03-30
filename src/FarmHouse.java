@@ -5,9 +5,8 @@ public class FarmHouse {
 	private EggDeliveryGUI gui;
 	
 	private int orders;									// number of orders
-														// TODO make a queue for order incoming times, so we can track fulfillment time
 	private int stash;									// number of eggs in stash
-	private PriorityBlockingQueue<Hen> hens;						// hens in the FarmHouse
+	private PriorityBlockingQueue<Hen> hens;			// hens in the FarmHouse
 	private PriorityBlockingQueue<Hen> nextEggQueue;	// tracks hens that are going to lay eggs
 	
 	public FarmHouse() {

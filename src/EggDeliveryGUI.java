@@ -1,6 +1,8 @@
 /* 
  * Othman Smihi - ICS 462 Program 2 
  * 
+ * 
+ * http://www.java-forums.org/advanced-java/4130-rounding-double-two-decimal-places.html
  */
 
 import java.awt.BorderLayout;
@@ -10,6 +12,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -37,6 +40,11 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	
 	private JPanel timePanel;
 	private EggGUIPanel clockPanel;
+	private JLabel ordersFilled;
+	private JLabel ordersFilledMean;
+	private JLabel ordersFilledStdDev;
+	
+	private DecimalFormat df;
 	
 	private JPanel farmPanel;
 	private EggGUIPanel orderPanel;
@@ -47,6 +55,8 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	private JTextArea textArea;
 	
 	public EggDeliveryGUI() {
+		df = new DecimalFormat("#.##");
+		
 		// set up main panel
 		makeMainPanel();
 		
@@ -84,15 +94,24 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	private void makeTitlePanel() {
 		titlePanel = new JPanel();
 		titlePanel.setOpaque(false);
-		titlePanel.setLayout(new GridLayout(0,1,5,5));
+		titlePanel.setLayout(new BorderLayout(5,5));
+
+		JLabel titleLabel = new JLabel(" Cleo's Farm");
+		titleLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
+		JLabel subTitleLabel = new JLabel("   Othman Smihi - ICS 462 Operating Systems");
+		subTitleLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
 		
-		JLabel titleLabel = new JLabel("Cleo's Farm");
-		titleLabel.setFont(new Font("Courier New", Font.BOLD, 32));
+		JPanel titleBox = new JPanel();
+		titleBox.setLayout(new BorderLayout(4,4));
+		titleBox.setOpaque(false);
+		titleBox.add(titleLabel, BorderLayout.NORTH);
+		titleBox.add(subTitleLabel, BorderLayout.CENTER);
 		
-		cleoPanel = new EggGUIPanel("res/cleo1.png", "res/cleo2.gif", 128);
+		cleoPanel = new EggGUIPanel("res/cleo1.png", "res/cleo2.gif", 128, 28);
 		
-		titlePanel.add(titleLabel);
-		titlePanel.add(cleoPanel);
+		titlePanel.add(titleBox, BorderLayout.NORTH);
+		titlePanel.add(cleoPanel, BorderLayout.CENTER);
+		titlePanel.add(new JLabel(), BorderLayout.SOUTH);
 	}
 	
 	private void makeFarmPanel() {
@@ -100,12 +119,10 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		farmPanel.setOpaque(false);
 		farmPanel.setLayout(new GridLayout(0,1,2,2));
 		
-		//JLabel farmLabel = new JLabel("Farmhouse");
-		orderPanel = new EggGUIPanel("res/order.png");
-		stashPanel = new EggGUIPanel("res/stash.png");
-		hensPanel = new EggGUIPanel("res/hen1.gif", "res/hen.gif");
+		orderPanel = new EggGUIPanel("res/order.png", null, 64, 24);
+		stashPanel = new EggGUIPanel("res/stash.png", null, 64, 24);
+		hensPanel = new EggGUIPanel("res/hen1.gif", "res/hen.gif", 64, 24);
 		
-		//farmPanel.add(farmLabel);
 		farmPanel.add(orderPanel);
 		farmPanel.add(stashPanel);
 		farmPanel.add(hensPanel);
@@ -139,12 +156,52 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	
 	private void makeTimePanel() {
 		timePanel = new JPanel();
-		timePanel.setLayout(new BorderLayout(5,5));
+		timePanel.setLayout(new BorderLayout(10,25));
 		timePanel.setOpaque(false);
 		
-		clockPanel = new EggGUIPanel("res/clock.gif");
+		clockPanel = new EggGUIPanel("res/clock.gif", null, 64, 32);
 		clockPanel.setValue("0");
 		
+		JPanel statsPanel = new JPanel();
+		statsPanel.setLayout(new BorderLayout(5,5));
+		statsPanel.setOpaque(false);
+		
+		JLabel statsLabel = new JLabel("Order statistics");
+		statsLabel.setFont(new Font(Font.MONOSPACED, Font.BOLD, 24));
+		
+		JPanel lStats = new JPanel();
+		lStats.setLayout(new GridLayout(0,1,3,3));
+		lStats.setOpaque(false);
+		
+		JPanel rStats = new JPanel();
+		rStats.setLayout(new GridLayout(0,1,3,3));
+		rStats.setOpaque(false);
+		
+		ordersFilled = new JLabel(strFmt(0,8));
+		ordersFilled.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		ordersFilledMean = new JLabel(strFmt(0,8));
+		ordersFilledMean.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		ordersFilledStdDev = new JLabel(strFmt(0,8));
+		ordersFilledStdDev.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		
+		lStats.add(new JLabel("Deliveries")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		lStats.add(new JLabel("Mean")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		lStats.add(new JLabel("Std Dev")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		//lStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
+		rStats.add(ordersFilled);
+		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
+		rStats.add(ordersFilledMean);
+		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
+		rStats.add(ordersFilledStdDev);
+		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
+		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
+		//rStats.add(new JLabel(" ")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
+		
+		statsPanel.add(statsLabel, BorderLayout.NORTH);
+		statsPanel.add(lStats, BorderLayout.WEST);
+		statsPanel.add(rStats, BorderLayout.EAST);
+
+
 		JPanel timeControlPanel = new JPanel();
 		timeControlPanel.setLayout(new GridLayout(1,0,5,5));
 		timeControlPanel.setOpaque(false);
@@ -184,6 +241,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		timeControlPanel.add(instBtn);
 		
 		timePanel.add(clockPanel, BorderLayout.NORTH);
+		timePanel.add(statsPanel, BorderLayout.CENTER);
 		timePanel.add(timeControlPanel, BorderLayout.SOUTH);		
 	}
 	
@@ -206,12 +264,35 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	public void setHens(int numHens, int numHenEggs) {
-		if ( numHens > 50 ) if (hensPanel.flip()) hensPanel.flip(); // for fun, animate hen pic sometimes
+		if ( numHenEggs > 0 ) if (hensPanel.flip()) hensPanel.flip(); // for fun, animate hen pic sometimes
 		hensPanel.setValue("" + numHens + " (" + numHenEggs + " eggs)");
 	}
 	
 	public void setOrders(int numOrders) {
 		orderPanel.setValue("" + numOrders);
+	}
+	
+	public void setOrderStats(int count, double mean, double stdDev) {
+		ordersFilled.setText(strFmt(count, 8));
+		ordersFilledMean.setText(strFmt(mean, 8));
+		ordersFilledStdDev.setText(strFmt(stdDev, 8));
+	}
+	
+	// format our numbers to a string 
+	private String strFmt(double num, int len) {
+		// Round number to 2 decimal places
+		String str = String.format("%.2f", Double.valueOf(df.format(num)));
+		// fill spaces to len
+		for (int i = len - str.length(); i > 0; i--) str = " " + str;
+		return str + " ";
+	}
+	
+	private String strFmt(int num, int len) {
+		// fill spaces after
+		String str = "" + num + "   ";
+		// fill spaces before
+		for (int i = len - str.length(); i > 0; i--) str = " " + str;
+		return str + " ";
 	}
 	
 	public void setStash(int stashSize) {
@@ -226,5 +307,5 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	@Override
 	public void setSpeed(ClockMode spd) {
 		speed = spd;
-	} 
+	}
 }

@@ -1,5 +1,9 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 
 public class EggDeliveryController extends Clock {
@@ -17,6 +21,12 @@ public class EggDeliveryController extends Clock {
 	private long nextOrderTime;
 	private long deliveryDoneTime;
 	private long deliveryDuration;
+
+	private Queue<Long> orderTimes;				// time at which each order came in 
+	private List<Long> orderFillTimes;			// time it took to fill each order
+	private int ordersFilled;
+	private double orderFillMean;
+	private double orderFillStdDev;
 	
 	private long collectionDoneTime;
 	private long collectionDuration;
@@ -62,8 +72,14 @@ public class EggDeliveryController extends Clock {
 		
 		cleo = new Cleo(farm);
 		gui.setCleoState(Cleo.CleoState.IDLE);
-
+		
 		nextOrderTime = getTime() + nextOrder();
+
+		orderTimes = new LinkedList<Long>();
+		orderFillTimes = new ArrayList<Long>();
+		ordersFilled = 0;
+		orderFillMean = 0;
+		orderFillStdDev = 0;
 
 		cleoThread = new Thread(cleo);
 		cleoThread.start();
@@ -82,17 +98,14 @@ public class EggDeliveryController extends Clock {
 	@Override
 	public void endAction() {
 		// TODO what to do at the end
-		// TODO join the threads
 
 		try {
 			cleoThread.join();
 			clockThread.join();
 		} catch (InterruptedException e) {}
 
-		// TODO show stats
-		// TODO incl. tracking individual orders!??!
 		// TODO log when hens are killed
-		// 
+ 
 	}
 	
 	@Override
@@ -106,6 +119,8 @@ public class EggDeliveryController extends Clock {
 
 			nextOrderTime = getTime() + nextOrder();
 
+			orderTimes.add(getTime());
+			
 			synchronized(cleo) {
 				cleo.notify(); // now that there's an order to deliver, tell cleo there's something to do
 			}
@@ -161,6 +176,28 @@ public class EggDeliveryController extends Clock {
 	
 	private synchronized void completeDelivery() {
 		logger.log(getTime(), "Delivery (" + deliveryDuration + ")", farm.countStash(), farm.countHens(), farm.countHenEggs());
+		
+		long orderFillTime = getTime() - orderTimes.poll();
+		orderFillTimes.add(orderFillTime);
+		
+		ordersFilled++;
+	
+		// some inefficient calculations of mean & standard deviation to follow...
+		orderFillMean = 0;
+		for (long oft : orderFillTimes) {
+			orderFillMean += (double)oft;
+		}
+		orderFillMean = orderFillMean / ordersFilled;
+		
+		orderFillStdDev = 0;
+		
+		for (long oft : orderFillTimes) {
+			orderFillStdDev += Math.pow( (((double)oft) - orderFillMean), 2);
+		}
+		
+		orderFillStdDev = Math.sqrt( orderFillStdDev / ordersFilled );
+
+		gui.setOrderStats(ordersFilled, orderFillMean, orderFillStdDev);
 		
 		deliveryDuration = 0;
 		
