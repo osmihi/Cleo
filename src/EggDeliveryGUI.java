@@ -1,8 +1,17 @@
 /* 
  * Othman Smihi - ICS 462 Program 2 
  * 
+ * EggDeliveryGUI.java
  * 
+ * This is the main GUI class for the egg delivery application. 
+ * It implements ClockFace and Readout so that it can interact with the Clock and Logger classes.
+ * There's not a whole lot of interesting stuff going on in here, just a lot of GUI setup. :)
+ * 
+ * References:
  * http://www.java-forums.org/advanced-java/4130-rounding-double-two-decimal-places.html
+ * 
+ * Images were obtained from various websites via google images. 
+ * Since this is "for educational use only" I'm assuming I won't get sued for not crediting the sources.
  */
 
 import java.awt.BorderLayout;
@@ -20,7 +29,7 @@ import javax.swing.border.LineBorder;
 public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	private static final long serialVersionUID = 1254856031749675648L;
 
-	// Color palette
+	// Color palette (I usually set up some colors to use in the GUI, but I didn't really use them much here)
 	// http://kuler.adobe.com/#themeID/2301655
 	private Color[] colors = {
 		new Color(137,161,144),		// dark gray
@@ -30,28 +39,28 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		new Color(232,146,136)		// lipstick color
 	};
 	
-	private ClockMode speed = ClockMode.MEDIUM;
+	private ClockMode speed = ClockMode.MEDIUM;			// speed of the clock
 	
-	private JPanel mainPanel;
+	private JPanel mainPanel;							// main panel inside the frame
 
-	private JPanel titlePanel;
-	private EggGUIPanel cleoPanel;
+	private JPanel titlePanel;							// panel with title & cleo picture
+	private EggGUIPanel cleoPanel;						// cleo picture / state
 	
-	private JPanel timePanel;
-	private EggGUIPanel clockPanel;
-	private JLabel ordersFilled;
-	private JLabel ordersFilledMean;
-	private JLabel ordersFilledStdDev;
+	private JPanel timePanel;							// panel for time & stats
+	private EggGUIPanel clockPanel;						// timer pic & current time
+	private JLabel ordersFilled;						// # orders filled display
+	private JLabel ordersFilledMean;					// display for mean order fill time
+	private JLabel ordersFilledStdDev;					// display for std dev of order fill time
 	
-	private DecimalFormat df;
+	private DecimalFormat df;							// used for formatting our numbers
 	
-	private JPanel farmPanel;
-	private EggGUIPanel orderPanel;
-	private EggGUIPanel stashPanel;
-	private EggGUIPanel hensPanel;
+	private JPanel farmPanel;							// panel for orders, stash & hens
+	private EggGUIPanel orderPanel;						// pic & # orders
+	private EggGUIPanel stashPanel;						// pic & # of eggs in stash
+	private EggGUIPanel hensPanel;						// pic & # hens/eggs in henhouse
 	
-	private JPanel textPanel;
-	private JTextArea textArea;
+	private JPanel textPanel;							// panel to show the log output
+	private JTextArea textArea;							// scrolling text area for log output
 	
 	public EggDeliveryGUI() {
 		df = new DecimalFormat("#.##");
@@ -140,16 +149,19 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		
 		JLabel logNote = new JLabel("note: Complete program output is written to log.txt, located in the working directory.");
 		logNote.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 10));
-		
+
+		// set up scrolling log output display
 		JScrollPane tScroll = new JScrollPane(textArea);
 		tScroll.setPreferredSize(textPanel.getPreferredSize());
 		tScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		tScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
 		textPanel.add(tScroll, BorderLayout.CENTER);
 		textPanel.add(logNote, BorderLayout.SOUTH);
 	}
 	
 	public void writeText(String text) {
+		// limit the size of the text. This was necessary because the system was slowing considerably if left unchecked.
 		String txt = textArea.getText();
 		txt = txt.length() < 1000 ? txt : txt.substring(txt.length() - 1000);
 		textArea.setText(txt);
@@ -208,6 +220,8 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		JButton fastBtn = new JButton(" Fast ");
 		JButton instBtn = new JButton("Fastest");
 		
+		// button listeners to set speed
+		
 		slowBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				speed = ClockMode.SLOW;
@@ -243,6 +257,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	public void setCleoState(Cleo.CleoState cleoState) {
+		// somewhat silly method of changing animated/still state of cleo
 		String cleoStr = "";
 		if (cleoState == Cleo.CleoState.IDLE) {
 			cleoStr = "Idle";
@@ -311,6 +326,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		speed = spd;
 	}
 	
+	// show an alert for when the program is done
 	public void quit() {
 			JOptionPane.showMessageDialog(this, "Program complete. Press OK to quit.", "Program complete.", JOptionPane.ERROR_MESSAGE);
 	}

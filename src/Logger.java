@@ -1,3 +1,15 @@
+/* Othman Smihi - ICS 462 Program 2
+ * 
+ * Logger.java
+ * 
+ * This is the class that takes care of our logging operations.
+ * This includes writing to a file and sending the message to the gui.
+ * The GUI interaction is facilitated via the Readout interface, which is 
+ * implemented by the GUI.
+ * 
+ * it should be able to operated for the GUI + file, or just one.
+ */
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +22,7 @@ public class Logger {
 	
 	public Logger() {}
 
+	// A method to format strings to a fixed length
 	private String space(String str, int len) {
 		String space = "";
 		for (int i = 0; i < len - str.length(); i++) {space += " ";}
@@ -50,6 +63,8 @@ public class Logger {
 		writer = new BufferedWriter(fw);
 	}
 	
+	// This should open the log file with the default application in Windows.
+	// This could certainly be more robust and support more OSes, but it's just a simple "bonus" feature.
 	public void showLog() throws IOException {
 		// open the log file in Windows
 		Runtime.getRuntime().exec(new String[] {"rundll32", "url.dll,FileProtocolHandler", file.getAbsolutePath()});

@@ -1,3 +1,11 @@
+/* Othman Smihi - ICS 462 Program 2
+ * 
+ * EggGUIPanel.java
+ * 
+ * This is a GUI element I made to pair a flippable picture with some text.
+ * It gets used several times in the GUI.
+ */
+
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -9,8 +17,8 @@ import javax.swing.JPanel;
 public class EggGUIPanel extends JPanel {
 	private static final long serialVersionUID = -3120365435274336510L;
 
-	private PicLabel pic;
-	private JLabel val;
+	private PicLabel pic;					// a PicLabel is an inner class defined below
+	private JLabel val;						// display for text
 	
 	public EggGUIPanel(String picFile) {
 		this(picFile, null, 64);
@@ -43,6 +51,7 @@ public class EggGUIPanel extends JPanel {
 		this(picFile, altPicFile, size, size / 4);
 	}
 	
+	// toggle between main and alternate picture
 	public boolean flip() {
 		return pic.flip();
 	}
@@ -54,9 +63,9 @@ public class EggGUIPanel extends JPanel {
 	private class PicLabel extends JLabel {
 		private static final long serialVersionUID = -1287588379795601986L;
 
-		private ImageIcon img1;
-		private ImageIcon img2;
-		private int picSize;
+		private ImageIcon img1;					// picture A
+		private ImageIcon img2;					// picture B
+		private int picSize;					// picture size
 		
 		public PicLabel(String imgLoc, int sz) {
 			picSize = sz;
@@ -78,6 +87,7 @@ public class EggGUIPanel extends JPanel {
 			img2 = new ImageIcon(image2);
 		}
 		
+		// switch between picture A and B
 		public boolean flip() {
 			if (this.getIcon() == img1) {
 				this.setIcon(img2);

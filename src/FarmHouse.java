@@ -1,3 +1,15 @@
+/* Othman Smihi - ICS 462 Program 2
+ * 
+ * FarmHouse.java
+ * 
+ * This class holds the orders, stash, and hen data, as well as operations to manipulate them.
+ * When using queues, I used the PriorityBlockingQueue from the java.util.concurrent package,
+ * although I'm not sure if this is totally necessary or not. Since we're doing a bunch of
+ * concurrent stuff, I figured it's good to be on the safe side.
+ * 
+ * Most of what's going on in this class is pretty self-explanatory.
+ */
+
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class FarmHouse {
@@ -65,6 +77,7 @@ public class FarmHouse {
 		
 	}
 	
+	// Hen lays an egg
 	public boolean henLaysEgg(long nextEgg) {
 		Hen h = nextEggQueue.poll();
 		boolean eggWasLaid = h.layEgg();
@@ -75,6 +88,7 @@ public class FarmHouse {
 		return eggWasLaid;
 	}
 	
+	// Hen is killed
 	public Hen removeAnyHen() throws NoHenException {
 		if (!hens.isEmpty()) {
 			Hen h = hens.poll();

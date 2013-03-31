@@ -1,3 +1,21 @@
+/* Othman Smihi - ICS 462 Program 2
+ * 
+ * EggDeliveryController.java
+ * 
+ * This is the main "driver" of the egg collection program.
+ * It creates a thread for its Clocking and for Cleo; meanwhile,
+ * the farm-type functions go on here. 
+ * 
+ * The idea is to have a Controller that mediates between the "business objects"
+ * of the farm and cleo so they don't have to worry about things like logging
+ * and the GUI. 
+ * 
+ * Ideally, this controller class would be a lot more "lean" than it is now.
+ * If I were to do a 2nd version, I'd probably move more of the "miscellaneous"
+ * operations out into new or other classes.
+ * 
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -9,27 +27,27 @@ import java.util.Random;
 
 public class EggDeliveryController extends Clock {
 
-	private static Random random;
+	private static Random random;				// random number generator
 	
-	private EggDeliveryGUI gui;
-	private Logger logger;
-	private FarmHouse farm;
-	private Cleo cleo;
+	private EggDeliveryGUI gui;					// GUI object
+	private Logger logger;						// Logger object
+	private FarmHouse farm;						// farmhouse object, containing hens, stash, etc
+	private Cleo cleo;							// cleo instance
 	
-	Thread cleoThread;
-	Thread clockThread;
+	Thread cleoThread;							// thread used to run Cleo
+	Thread clockThread;							// thread used to run the clock
 
-	private long nextOrderTime;
-	private long deliveryDoneTime;
-	private long deliveryDuration;
+	private long nextOrderTime;					// time of the next order
+	private long deliveryDoneTime;				// time when the current delivery will be completed
+	private long deliveryDuration;				// duration of the current delivery
 
 	private Queue<Long> orderTimes;				// time at which each order came in 
 	private List<Long> orderFillTimes;			// time it took to fill each order
-	private int ordersFilled;
-	private double orderFillMean;
-	private double orderFillStdDev;
+	private int ordersFilled;					// number of orders that have been filled to date					
+	private double orderFillMean;				// mean time to fill an order
+	private double orderFillStdDev;				// standard deviation of time to fill an order
 	
-	private long collectionDoneTime;
+	private long collectionDoneTime;			// time when the current collection will be completed
 	
 	public EggDeliveryController() {
 		random = new Random();
@@ -85,7 +103,7 @@ public class EggDeliveryController extends Clock {
 	}
 
 	@Override
-	protected boolean continueCondition() {
+	protected boolean continueCondition() {			// program should stop after 100K time units
 		return getTime() <= 100000;
 	}
 
@@ -93,6 +111,8 @@ public class EggDeliveryController extends Clock {
 	public void endAction() {
 		gui.setCleoState(Cleo.CleoState.IDLE);
 
+		// report some stats when the program completes
+		
 		DecimalFormat df = new DecimalFormat("#.##");
 		
 		logger.log("");
@@ -110,7 +130,7 @@ public class EggDeliveryController extends Clock {
 		logger.log("");
 
 
-		// Show exit dialog and attempt to open log file.
+		// Show exit dialog and attempt to open log file (windows only).
 		try {
 			Thread.sleep(5000);
 			gui.quit();
@@ -205,9 +225,9 @@ public class EggDeliveryController extends Clock {
 			}	
 		}
 
+		// check if a hen was killed and, if so, log it.
 		if (cleo.henKilled()) {
 			logger.log(getTime(), "Hen killed!", farm.countStash(), farm.countHens(), farm.countHenEggs());	
-			gui.setHens(farm.countHens(), farm.countHenEggs());
 		}
 		
 		// Refresh the GUI values
@@ -217,18 +237,22 @@ public class EggDeliveryController extends Clock {
 		gui.setCleoState(cleo.getState());
 	}
 	
+	// generate the time of the next order as specified
 	public static long nextOrder() {
 		return (long)( -100 * Math.log( random.nextDouble() ) );
 	}
 
+	// generate the next delivery duration as specified
 	public static long deliveryTime() {
 		return (long)( 10 * random.nextGaussian() + 50 ); 
 	}
 
+	// generate a next egglay time for a hen, as specified
 	public static long nextEgg() {
 		return (long)( 100 * random.nextGaussian() + 500 );
 	}
 	
+	// calculate statistics about the orders
 	private void updateOrders() {
 		long orderFillTime = getTime() - orderTimes.poll();
 		orderFillTimes.add(orderFillTime);

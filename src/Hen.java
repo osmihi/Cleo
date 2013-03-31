@@ -1,8 +1,15 @@
-
+/* Othman Smihi - ICS 462 Program 2
+ * 
+ * Hen.java
+ * 
+ * This class represents a hen. It's pretty straightforward.
+ * Each hen has a number of eggs it's sitting on and a time that they'll
+ * lay their next egg.
+ */
 public class Hen {
 	
-	private int eggs;
-	private long nextEggTime;
+	private int eggs;				// number of eggs the hen is currently sitting on
+	private long nextEggTime;		// time that this hen should lay its next egg
 	
 	public Hen() {
 		eggs = 0;
