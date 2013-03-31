@@ -201,7 +201,7 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		ordersFilledStdDev.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
 		
 		lStats.add(new JLabel("Orders filled")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
-		lStats.add(new JLabel("Mean order time")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+		lStats.add(new JLabel("Mean order fill time")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
 		lStats.add(new JLabel("Standard Deviation")).setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
 		rStats.add(ordersFilled);
 		rStats.add(ordersFilledMean);

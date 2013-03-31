@@ -175,7 +175,8 @@ public class EggDeliveryController extends Clock {
 		// Begin the delivery process
 		if (cleo.getState() == Cleo.CleoState.DELIVERING && deliveryDoneTime < getTime()) {
 			gui.setCleoState(Cleo.CleoState.DELIVERING);
-
+			logger.log(getTime(), "Begin delivery", farm.countStash(), farm.countHens(), farm.countHenEggs());
+			
 			deliveryDuration = deliveryTime();
 			deliveryDoneTime = getTime() + deliveryDuration;
 		}
@@ -205,6 +206,7 @@ public class EggDeliveryController extends Clock {
 		// Begin the egg collection process
 		if (cleo.getState() == Cleo.CleoState.COLLECTING && collectionDoneTime < getTime()) {
 			gui.setCleoState(Cleo.CleoState.COLLECTING);
+			logger.log(getTime(), "Begin collection", farm.countStash(), farm.countHens(), farm.countHenEggs());
 
 			// note: Eggs laid during collection are not collected.
 			cleo.beginEggCollection(getTime());
