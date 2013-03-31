@@ -131,17 +131,22 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 		textPanel = new JPanel(); 
 		textPanel.setPreferredSize(new Dimension(310,248));
 		textPanel.setLayout(new BorderLayout(4,4));
+		textPanel.setOpaque(false);
 		textArea = new JTextArea("");
 		textArea.setFont(new Font("Consolas", Font.PLAIN, 12));
 		textArea.setEditable(false);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		
+		JLabel logNote = new JLabel("note: Complete program output is written to log.txt, located in the working directory.");
+		logNote.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 10));
+		
 		JScrollPane tScroll = new JScrollPane(textArea);
 		tScroll.setPreferredSize(textPanel.getPreferredSize());
 		tScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		tScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		textPanel.add(tScroll, BorderLayout.CENTER);
+		textPanel.add(logNote, BorderLayout.SOUTH);
 	}
 	
 	public void writeText(String text) {
@@ -304,5 +309,14 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	@Override
 	public void setSpeed(ClockMode spd) {
 		speed = spd;
+	}
+	
+	public void quit() {
+		try {
+			Thread.sleep(5000);
+			JOptionPane.showMessageDialog(this, "Program complete. Press OK to quit.", "Program complete.", JOptionPane.ERROR_MESSAGE);
+		} catch (InterruptedException e) {} finally {
+			System.exit(0);
+		}
 	}
 }

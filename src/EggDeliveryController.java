@@ -91,17 +91,25 @@ public class EggDeliveryController extends Clock {
 
 	@Override
 	public void endAction() {
-
 		gui.setCleoState(Cleo.CleoState.IDLE);
 
-		// TODO I should note somewhere that the log writes to log.txt
 		DecimalFormat df = new DecimalFormat("#.##");
 		
+		logger.log("");
+		logger.log("==================================================");
+		logger.log("");
 		logger.log("Simulation complete!");
+		logger.log("");
+		logger.log("Eggs left in the stash: " + farm.countStash() + "");
+		logger.log("");
 		logger.log("Number of orders filled: " + ordersFilled + "");
+		logger.log("");
 		logger.log("Mean time to fill an order: " + Double.valueOf(df.format(orderFillMean)) + " time units.");
+		logger.log("");
 		logger.log("Standard deviation of order fill time: " + Double.valueOf(df.format(orderFillStdDev)) + " time units.");
+		logger.log("");
 		
+		gui.quit();
 	}
 	
 	@Override
