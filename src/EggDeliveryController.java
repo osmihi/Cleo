@@ -108,8 +108,16 @@ public class EggDeliveryController extends Clock {
 		logger.log("");
 		logger.log("Standard deviation of order fill time: " + Double.valueOf(df.format(orderFillStdDev)) + " time units.");
 		logger.log("");
-		
-		gui.quit();
+
+
+		// Show exit dialog and attempt to open log file.
+		try {
+			Thread.sleep(5000);
+			gui.quit();
+			logger.showLog();
+		} catch (Exception e) {} finally {
+			System.exit(0);
+		}
 	}
 	
 	@Override

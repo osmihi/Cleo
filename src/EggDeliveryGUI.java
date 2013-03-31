@@ -312,11 +312,6 @@ public class EggDeliveryGUI extends JFrame implements ClockFace, Readout {
 	}
 	
 	public void quit() {
-		try {
-			Thread.sleep(5000);
 			JOptionPane.showMessageDialog(this, "Program complete. Press OK to quit.", "Program complete.", JOptionPane.ERROR_MESSAGE);
-		} catch (InterruptedException e) {} finally {
-			System.exit(0);
-		}
 	}
 }

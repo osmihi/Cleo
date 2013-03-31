@@ -6,6 +6,7 @@ import java.io.IOException;
 public class Logger {
 	private Readout readout;
 	private BufferedWriter writer;
+	private File file;
 	
 	public Logger() {}
 
@@ -43,7 +44,14 @@ public class Logger {
 			outFile.createNewFile();
 		}
 
+		file = outFile;
+		
 		FileWriter fw = new FileWriter(outFile.getAbsoluteFile());
 		writer = new BufferedWriter(fw);
+	}
+	
+	public void showLog() throws IOException {
+		// open the log file in Windows
+		Runtime.getRuntime().exec(new String[] {"rundll32", "url.dll,FileProtocolHandler", file.getAbsolutePath()});
 	}
 }
